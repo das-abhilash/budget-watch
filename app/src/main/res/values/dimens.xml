@@ -15,4 +15,5 @@
     <dimen name="titlePaddingTop">20dip</dimen>
     <dimen name="inputSize">18sp</dimen>
     <dimen name="inputTitleSize">15sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

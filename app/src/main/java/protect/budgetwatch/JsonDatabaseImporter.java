@@ -205,6 +205,6 @@ public class JsonDatabaseImporter implements DatabaseImporter
             throw new FormatException("Missing required data in JSON record");
         }
 
-        helper.insertBudget(database, name, value.intValue());
+        helper.insertBudget(database, name, value.intValue(),1);
     }
 }

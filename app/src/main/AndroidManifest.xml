@@ -3,8 +3,11 @@
     package="protect.budgetwatch">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:required="true" android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="false"
@@ -12,36 +15,67 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".RewardActivity"></activity>
+        <activity android:name=".GoalActivity" />
+        <activity android:name=".evaluate.EvaluatePurchaseActivity" />
+        <activity
+            android:name=".ExpenseSheetActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".info.EvaluateSlide1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".info.EvaluateSlide2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".evaluate.EvaluateSlide3"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".evaluate.EvaluateSlide4"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".evaluate.EvaluateSlide5"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".evaluate.EvaluateSlide6"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".evaluate.EvaluateSlide9"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                       android:resource="@xml/shortcuts" />
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".BudgetActivity"
             android:label="@string/budgetsTitle"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BudgetViewActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TransactionActivity"
             android:label="@string/transactionsTitle"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -49,48 +83,60 @@
         <activity
             android:name=".TransactionViewActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"
             android:launchMode="singleTop"
-            android:exported="true"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ImportExportActivity"
-            android:label="@string/importExportTitle"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="@string/importExportTitle"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReceiptViewActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".intro.IntroActivity"
             android:label=""
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".info.InfoActivity"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShortcutConfigure"
-            android:label="@string/addShortcutsTitle"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:label="@string/addShortcutsTitle">
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <receiver android:label="@string/app_name" android:name="TransactionExpenseWidget">
+
+        <receiver
+            android:name=".TransactionExpenseWidget"
+            android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_provider"/>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
         </receiver>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:grantUriPermissions="true"
+            android:authorities="${applicationId}"
             android:exported="false"
-            android:authorities="${applicationId}">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider_paths"/>
+                android:resource="@xml/file_provider_paths" />
         </provider>
     </application>
 

@@ -230,6 +230,6 @@ public class CsvDatabaseImporter implements DatabaseImporter
         // The transaction field for value is used to indicate the budget value
         int budget = extractInt(DBHelper.TransactionDbIds.VALUE, record);
 
-        helper.insertBudget(database, name, budget);
+        helper.insertBudget(database, name, budget,1);
     }
 }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="10"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-thin"
+        android:gravity="center"
+        android:text="Step 2"
+        android:textColor="#333333"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-thin"
+        android:gravity="center"
+        android:text="Enter your fixed Expenses"
+        android:textColor="#333333"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/et_rent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:hint="Home/Rent"
+        android:inputType="number"
+        android:textColor="#333333"
+        android:textSize="32sp" />
+
+    <EditText
+        android:id="@+id/et_bills"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:hint="Utilities And Bills"
+        android:inputType="number"
+        android:textColor="#333333"
+        android:textSize="32sp" />
+
+    <EditText
+        android:id="@+id/et_loan"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:hint="Loan/Insurence/Emi"
+        android:inputType="number"
+        android:textColor="#333333"
+        android:textSize="32sp" />
+
+    <EditText
+        android:id="@+id/et_msls"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:hint="Other Fixed Expenses"
+        android:inputType="number"
+        android:textColor="#333333"
+        android:textSize="32sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="64dp" />
+</LinearLayout>

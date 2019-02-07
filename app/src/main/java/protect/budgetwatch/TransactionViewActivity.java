@@ -52,15 +52,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class TransactionViewActivity extends AppCompatActivity
-{
+public class TransactionViewActivity extends AppCompatActivity {
+    static final String ACTION_NEW_EXPENSE = "ActionAddExpense";
+    static final String ACTION_NEW_REVENUE = "ActionAddRevenue";
     private static final String TAG = "BudgetWatch";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSIONS_REQUEST_CAMERA = 2;
-
-    static final String ACTION_NEW_EXPENSE = "ActionAddExpense";
-    static final String ACTION_NEW_REVENUE = "ActionAddRevenue";
-
     private String capturedUncommittedReceipt = null;
     private DBHelper _db;
 
@@ -90,54 +87,41 @@ public class TransactionViewActivity extends AppCompatActivity
     private boolean _updateTransaction;
     private boolean _viewTransaction;
 
-    private void extractIntentFields(Intent intent)
-    {
+    private void extractIntentFields(Intent intent) {
         final Bundle b = intent.getExtras();
         String action = intent.getAction();
-        if(b != null)
-        {
+        if (b != null) {
             _transactionId = b.getInt("id");
             _type = b.getInt("type");
             _updateTransaction = b.getBoolean("update", false);
             _viewTransaction = b.getBoolean("view", false);
-        }
-        else if(action != null)
-        {
+        } else if (action != null) {
             _updateTransaction = false;
             _viewTransaction = false;
 
-            if(action.equals(ACTION_NEW_EXPENSE))
-            {
+            if (action.equals(ACTION_NEW_EXPENSE)) {
                 _type = DBHelper.TransactionDbIds.EXPENSE;
-            }
-            else if(action.equals(ACTION_NEW_REVENUE))
-            {
+            } else if (action.equals(ACTION_NEW_REVENUE)) {
                 _type = DBHelper.TransactionDbIds.REVENUE;
-            }
-            else
-            {
+            } else {
                 Log.d(TAG, "Unsupported action '" + action + "', bailing");
                 finish();
             }
-        }
-        else
-        {
+        } else {
             Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
             finish();
         }
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.transaction_view_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
-        {
+        if (actionBar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -153,9 +137,9 @@ public class TransactionViewActivity extends AppCompatActivity
         _noteView = (TextView) findViewById(R.id.noteView);
         _budgetView = (TextView) findViewById(R.id.budgetView);
         _dateView = (TextView) findViewById(R.id.dateView);
-        _captureButton = (Button)findViewById(R.id.captureButton);
-        _viewButton = (Button)findViewById(R.id.viewButton);
-        _updateButton = (Button)findViewById(R.id.updateButton);
+        _captureButton = (Button) findViewById(R.id.captureButton);
+        _viewButton = (Button) findViewById(R.id.viewButton);
+        _updateButton = (Button) findViewById(R.id.updateButton);
         _receiptLayout = findViewById(R.id.receiptLayout);
         _endingDivider = findViewById(R.id.endingDivider);
         _receiptLocationField = (TextView) findViewById(R.id.receiptLocation);
@@ -168,45 +152,30 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    public void onNewIntent(Intent intent)
-    {
+    public void onNewIntent(Intent intent) {
         Log.i(TAG, "Received new intent");
         extractIntentFields(intent);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
-        if(_type == DBHelper.TransactionDbIds.EXPENSE)
-        {
-            if (_updateTransaction)
-            {
+        if (_type == DBHelper.TransactionDbIds.EXPENSE) {
+            if (_updateTransaction) {
                 setTitle(R.string.editExpenseTransactionTitle);
-            }
-            else if (_viewTransaction)
-            {
+            } else if (_viewTransaction) {
                 setTitle(R.string.viewExpenseTransactionTitle);
-            }
-            else
-            {
+            } else {
                 setTitle(R.string.addExpenseTransactionTitle);
             }
-        }
-        else if(_type == DBHelper.TransactionDbIds.REVENUE)
-        {
-            if(_updateTransaction)
-            {
+        } else if (_type == DBHelper.TransactionDbIds.REVENUE) {
+            if (_updateTransaction) {
                 setTitle(R.string.editRevenueTransactionTitle);
-            }
-            else if(_viewTransaction)
-            {
+            } else if (_viewTransaction) {
                 setTitle(R.string.viewRevenueTransactionTitle);
-            }
-            else
-            {
+            } else {
                 setTitle(R.string.addRevenueTransactionTitle);
             }
         }
@@ -216,23 +185,18 @@ public class TransactionViewActivity extends AppCompatActivity
 
         _dateEdit.setText(dateFormatter.format(date.getTime()));
 
-        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
-        {
+        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int month, int day)
-            {
+            public void onDateSet(DatePicker view, int year, int month, int day) {
                 date.set(year, month, day);
                 _dateEdit.setText(dateFormatter.format(date.getTime()));
             }
         };
 
-        _dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        _dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if (hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     int year = date.get(Calendar.YEAR);
                     int month = date.get(Calendar.MONTH);
                     int day = date.get(Calendar.DATE);
@@ -252,21 +216,18 @@ public class TransactionViewActivity extends AppCompatActivity
         budgetNames.addFirst("");
 
         // Add budget items to spinner if it has not been initialized yet
-        if(_budgetSpinner.getCount() == 0)
-        {
+        if (_budgetSpinner.getCount() == 0) {
             ArrayAdapter<String> budgets = new ArrayAdapter<>(this, R.layout.spinner_textview, budgetNames);
             _budgetSpinner.setAdapter(budgets);
         }
 
-        if(_updateTransaction || _viewTransaction)
-        {
+        if (_updateTransaction || _viewTransaction) {
             Transaction transaction = _db.getTransaction(_transactionId);
             (_updateTransaction ? _nameEdit : _nameView).setText(transaction.description);
             (_updateTransaction ? _accountEdit : _accountView).setText(transaction.account);
 
             int budgetIndex = budgetNames.indexOf(transaction.budget);
-            if(budgetIndex >= 0)
-            {
+            if (budgetIndex >= 0) {
                 _budgetSpinner.setSelection(budgetIndex);
             }
             _budgetView.setText(_viewTransaction ? transaction.budget : "");
@@ -276,8 +237,7 @@ public class TransactionViewActivity extends AppCompatActivity
             (_updateTransaction ? _dateEdit : _dateView).setText(dateFormatter.format(new Date(transaction.dateMs)));
             _receiptLocationField.setText(transaction.receipt);
 
-            if(_viewTransaction)
-            {
+            if (_viewTransaction) {
                 _budgetSpinner.setVisibility(View.GONE);
                 _nameEdit.setVisibility(View.GONE);
                 _accountEdit.setVisibility(View.GONE);
@@ -292,20 +252,15 @@ public class TransactionViewActivity extends AppCompatActivity
 
                 // If viewing a transaction, only display the receipt
                 // field if a receipt is captured
-                if(transaction.receipt.isEmpty() == false)
-                {
+                if (transaction.receipt.isEmpty() == false) {
                     _receiptLayout.setVisibility(View.VISIBLE);
                     _endingDivider.setVisibility(View.VISIBLE);
                     _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
-                }
-                else
-                {
+                } else {
                     _receiptLayout.setVisibility(View.GONE);
                     _endingDivider.setVisibility(View.GONE);
                 }
-            }
-            else
-            {
+            } else {
                 _budgetView.setVisibility(View.GONE);
                 _nameView.setVisibility(View.GONE);
                 _accountView.setVisibility(View.GONE);
@@ -316,21 +271,16 @@ public class TransactionViewActivity extends AppCompatActivity
                 // If editing a transaction, always list the receipt field
                 _receiptLayout.setVisibility(View.VISIBLE);
                 _endingDivider.setVisibility(View.VISIBLE);
-                if(transaction.receipt.isEmpty() && capturedUncommittedReceipt == null)
-                {
+                if (transaction.receipt.isEmpty() && capturedUncommittedReceipt == null) {
                     _noReceiptButtonLayout.setVisibility(View.VISIBLE);
                     _hasReceiptButtonLayout.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     _noReceiptButtonLayout.setVisibility(View.GONE);
                     _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
                     _updateButton.setVisibility(View.VISIBLE);
                 }
             }
-        }
-        else
-        {
+        } else {
             _budgetView.setVisibility(View.GONE);
             _nameView.setVisibility(View.GONE);
             _accountView.setVisibility(View.GONE);
@@ -341,31 +291,23 @@ public class TransactionViewActivity extends AppCompatActivity
             // If adding a transaction, always list the receipt field
             _receiptLayout.setVisibility(View.VISIBLE);
             _endingDivider.setVisibility(View.VISIBLE);
-            if(capturedUncommittedReceipt == null)
-            {
+            if (capturedUncommittedReceipt == null) {
                 _noReceiptButtonLayout.setVisibility(View.VISIBLE);
                 _hasReceiptButtonLayout.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 _noReceiptButtonLayout.setVisibility(View.GONE);
                 _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
                 _updateButton.setVisibility(View.VISIBLE);
             }
         }
 
-        View.OnClickListener captureCallback = new View.OnClickListener()
-        {
+        View.OnClickListener captureCallback = new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(TransactionViewActivity.this,
-                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                {
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     captureReceipt();
-                }
-                else
-                {
+                } else {
                     ActivityCompat.requestPermissions(TransactionViewActivity.this,
                             new String[]{Manifest.permission.CAMERA},
                             PERMISSIONS_REQUEST_CAMERA);
@@ -376,19 +318,16 @@ public class TransactionViewActivity extends AppCompatActivity
         _captureButton.setOnClickListener(captureCallback);
         _updateButton.setOnClickListener(captureCallback);
 
-        _viewButton.setOnClickListener(new View.OnClickListener()
-        {
+        _viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), ReceiptViewActivity.class);
                 final Bundle b = new Bundle();
 
                 final TextView receiptField = (TextView) findViewById(R.id.receiptLocation);
 
                 String receipt = receiptField.getText().toString();
-                if(capturedUncommittedReceipt != null)
-                {
+                if (capturedUncommittedReceipt != null) {
                     receipt = capturedUncommittedReceipt;
                 }
 
@@ -399,14 +338,12 @@ public class TransactionViewActivity extends AppCompatActivity
         });
     }
 
-    private void doSave()
-    {
+    private void doSave() {
         final String name = _nameEdit.getText().toString();
         // name field is optional, so it is OK if it is empty
 
-        final String budget = (String)_budgetSpinner.getSelectedItem();
-        if (budget == null)
-        {
+        final String budget = (String) _budgetSpinner.getSelectedItem();
+        if (budget == null) {
             Snackbar.make(_budgetSpinner, R.string.budgetMissing, Snackbar.LENGTH_LONG).show();
             return;
         }
@@ -415,19 +352,15 @@ public class TransactionViewActivity extends AppCompatActivity
         // The account field is optional, so it is OK if it is empty
 
         final String valueStr = _valueEdit.getText().toString();
-        if (valueStr.isEmpty())
-        {
+        if (valueStr.isEmpty()) {
             Snackbar.make(_valueEdit, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
             return;
         }
 
         double value;
-        try
-        {
+        try {
             value = Double.parseDouble(valueStr);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             Snackbar.make(_valueEdit, R.string.valueInvalid, Snackbar.LENGTH_LONG).show();
             return;
         }
@@ -438,23 +371,18 @@ public class TransactionViewActivity extends AppCompatActivity
         final String dateStr = _dateEdit.getText().toString();
         final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
         long dateMs;
-        try
-        {
+        try {
             dateMs = dateFormatter.parse(dateStr).getTime();
-        }
-        catch (ParseException e)
-        {
+        } catch (ParseException e) {
             Snackbar.make(_dateEdit, R.string.dateInvalid, Snackbar.LENGTH_LONG).show();
             return;
         }
 
         String receipt = _receiptLocationField.getText().toString();
-        if(capturedUncommittedReceipt != null)
-        {
+        if (capturedUncommittedReceipt != null) {
             // Delete the old receipt, it is no longer needed
             File oldReceipt = new File(receipt);
-            if(oldReceipt.delete() == false)
-            {
+            if (!oldReceipt.delete()) {
                 Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
             }
 
@@ -463,14 +391,11 @@ public class TransactionViewActivity extends AppCompatActivity
             capturedUncommittedReceipt = null;
         }
 
-        if(_updateTransaction)
-        {
+        if (_updateTransaction) {
             _db.updateTransaction(_transactionId, _type, name, account,
                     budget, value, note, dateMs, receipt);
 
-        }
-        else
-        {
+        } else {
             _db.insertTransaction(_type, name, account, budget,
                     value, note, dateMs, receipt);
         }
@@ -478,14 +403,11 @@ public class TransactionViewActivity extends AppCompatActivity
         finish();
     }
 
-    private void captureReceipt()
-    {
-        if(capturedUncommittedReceipt != null)
-        {
+    private void captureReceipt() {
+        if (capturedUncommittedReceipt != null) {
             Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
             File unneededReceipt = new File(capturedUncommittedReceipt);
-            if(unneededReceipt.delete() == false)
-            {
+            if (!unneededReceipt.delete()) {
                 Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
             }
             capturedUncommittedReceipt = null;
@@ -493,16 +415,14 @@ public class TransactionViewActivity extends AppCompatActivity
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         PackageManager packageManager = getPackageManager();
-        if(packageManager == null)
-        {
+        if (packageManager == null) {
             Log.e(TAG, "Failed to get package manager, cannot take picture");
             Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
                     Toast.LENGTH_LONG).show();
             return;
         }
 
-        if(takePictureIntent.resolveActivity(packageManager) == null)
-        {
+        if (takePictureIntent.resolveActivity(packageManager) == null) {
             Log.e(TAG, "Could not find an activity to take a picture");
             Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
             return;
@@ -516,12 +436,9 @@ public class TransactionViewActivity extends AppCompatActivity
         // For those platforms a FileProvider is used to provide a content Uri. Older
         // platforms still use the file Uri, in part to also allow easier testing
         // using Robolectric.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, imageLocation);
-        }
-        else
-        {
+        } else {
             imageUri = Uri.fromFile(imageLocation);
         }
 
@@ -531,15 +448,12 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
-        if(capturedUncommittedReceipt != null)
-        {
+    protected void onDestroy() {
+        if (capturedUncommittedReceipt != null) {
             // The receipt was captured but never used
             Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
             File unneededReceipt = new File(capturedUncommittedReceipt);
-            if(unneededReceipt.delete() == false)
-            {
+            if (!unneededReceipt.delete()) {
                 Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
             }
             capturedUncommittedReceipt = null;
@@ -551,18 +465,12 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        if(_viewTransaction)
-        {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (_viewTransaction) {
             getMenuInflater().inflate(R.menu.view_menu, menu);
-        }
-        else if(_updateTransaction)
-        {
+        } else if (_updateTransaction) {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
-        }
-        else
-        {
+        } else {
             getMenuInflater().inflate(R.menu.add_menu, menu);
         }
 
@@ -570,24 +478,20 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.action_save)
-        {
+        if (id == R.id.action_save) {
             doSave();
             return true;
         }
 
-        if(id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             finish();
             return true;
         }
 
-        if(id == R.id.action_edit)
-        {
+        if (id == R.id.action_edit) {
             finish();
 
             Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
@@ -600,16 +504,13 @@ public class TransactionViewActivity extends AppCompatActivity
             return true;
         }
 
-        if(id == R.id.action_delete)
-        {
+        if (id == R.id.action_delete) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.deleteTransactionTitle);
             builder.setMessage(R.string.deleteTransactionConfirmation);
-            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
-            {
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
+                public void onClick(DialogInterface dialog, int which) {
                     Log.e(TAG, "Deleting transaction: " + _transactionId);
 
                     _db.deleteTransaction(_transactionId);
@@ -618,11 +519,9 @@ public class TransactionViewActivity extends AppCompatActivity
                     dialog.dismiss();
                 }
             });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-            {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
+                public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
             });
@@ -635,21 +534,17 @@ public class TransactionViewActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private File getNewImageLocation()
-    {
+    private File getNewImageLocation() {
         File imageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
-        if(imageDir == null)
-        {
+        if (imageDir == null) {
             Log.e(TAG, "Failed to locate directory for pictures");
             Toast.makeText(this, R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
             return null;
         }
 
-        if(imageDir.exists() == false)
-        {
-            if(imageDir.mkdirs() == false)
-            {
+        if (imageDir.exists() == false) {
+            if (imageDir.mkdirs() == false) {
                 Log.e(TAG, "Failed to create receipts image directory");
                 Toast.makeText(this, R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
                 return null;
@@ -662,21 +557,17 @@ public class TransactionViewActivity extends AppCompatActivity
         return receiptFile;
     }
 
-    private boolean reencodeImageWithQuality(String original, int quality)
-    {
+    private boolean reencodeImageWithQuality(String original, int quality) {
         File destFile = new File(original);
         File tmpLocation = getNewImageLocation();
 
-        try
-        {
-            if (tmpLocation == null)
-            {
+        try {
+            if (tmpLocation == null) {
                 throw new IOException("Could not create location for tmp file");
             }
 
             boolean created = tmpLocation.createNewFile();
-            if (created == false)
-            {
+            if (created == false) {
                 throw new IOException("Could not create tmp file");
             }
 
@@ -686,32 +577,25 @@ public class TransactionViewActivity extends AppCompatActivity
             fOut.flush();
             fOut.close();
 
-            if (fileWritten == false)
-            {
+            if (fileWritten == false) {
                 throw new IOException("Could not down compress file");
             }
 
             boolean renamed = tmpLocation.renameTo(destFile);
-            if (renamed == false)
-            {
+            if (renamed == false) {
                 throw new IOException("Could not move converted file");
             }
 
             Log.i(TAG, "Image file " + original + " saved at quality " + quality);
 
             return true;
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             Log.e(TAG, "Failed to encode image", e);
 
-            for(File item : new File[]{tmpLocation, destFile})
-            {
-                if(item != null)
-                {
+            for (File item : new File[]{tmpLocation, destFile}) {
+                if (item != null) {
                     boolean result = item.delete();
-                    if(result == false)
-                    {
+                    if (result == false) {
                         Log.w(TAG, "Failed to delete image file: " + item.getAbsolutePath());
                     }
                 }
@@ -722,55 +606,42 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "Received image from camera");
 
-        if(requestCode == REQUEST_IMAGE_CAPTURE)
-        {
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
             String jpegQualityLevelStr = prefs.getString("jpegQuality", "");
             int jpegQualityLevel = 40; // default value
 
-            try
-            {
+            try {
                 jpegQualityLevel = Integer.parseInt(jpegQualityLevelStr);
-            }
-            catch(NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 // If the setting has no value or is otherwise invalid, fall back
                 // on a default value
             }
 
             final int JPEG_QUALITY_LEVEL = jpegQualityLevel;
 
-            if (resultCode != RESULT_OK || JPEG_QUALITY_LEVEL == 100)
-            {
-                if(resultCode != RESULT_OK)
-                {
+            if (resultCode != RESULT_OK || JPEG_QUALITY_LEVEL == 100) {
+                if (resultCode != RESULT_OK) {
                     Log.e(TAG, "Failed to create receipt image: " + resultCode);
                     // No image was actually created, simply forget the patch
                     capturedUncommittedReceipt = null;
-                }
-                else
-                {
+                } else {
                     Log.i(TAG, "Image file saved: " + capturedUncommittedReceipt);
                 }
 
                 onResume();
-            }
-            else
-            {
+            } else {
                 Log.i(TAG, "Re-encoding image in background");
 
-                AsyncTask<Void, Void, Boolean> imageConverter = new AsyncTask<Void, Void, Boolean>()
-                {
+                AsyncTask<Void, Void, Boolean> imageConverter = new AsyncTask<Void, Void, Boolean>() {
                     ProgressDialog dialog;
 
                     @Override
-                    protected void onPreExecute()
-                    {
+                    protected void onPreExecute() {
                         dialog = new ProgressDialog(TransactionViewActivity.this);
                         dialog.setMessage(TransactionViewActivity.this.getResources().getString(R.string.encodingReceipt));
                         dialog.setCancelable(false);
@@ -779,20 +650,15 @@ public class TransactionViewActivity extends AppCompatActivity
                     }
 
                     @Override
-                    protected Boolean doInBackground(Void... params)
-                    {
+                    protected Boolean doInBackground(Void... params) {
                         return reencodeImageWithQuality(capturedUncommittedReceipt, JPEG_QUALITY_LEVEL);
                     }
 
                     @Override
-                    protected void onPostExecute(Boolean result)
-                    {
-                        if(result != null && result)
-                        {
+                    protected void onPostExecute(Boolean result) {
+                        if (result != null && result) {
                             Log.i(TAG, "Image file re-encoded: " + capturedUncommittedReceipt);
-                        }
-                        else
-                        {
+                        } else {
                             Log.e(TAG, "Failed to re-encode image");
                             // No image was actually created, simply forget the patch
                             capturedUncommittedReceipt = null;
@@ -809,19 +675,14 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
-    {
-        if(requestCode == PERMISSIONS_REQUEST_CAMERA)
-        {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted.
                 captureReceipt();
-            }
-            else
-            {
+            } else {
                 // Camera permission rejected, inform user that
                 // no receipt can be taken.
                 Toast.makeText(getApplicationContext(), R.string.noCameraPermissionError,
